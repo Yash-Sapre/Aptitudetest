@@ -1,0 +1,30 @@
+{% extends 'Quiz/base.html' %}
+{% block content %}
+
+    <form method ="POST">
+        {% csrf_token %} 
+        <div class = 'row'>
+            <div class='offset-4 col-4 p-2'>
+                QUESTION ADDITION FORM
+            </div>
+        </div>
+        {% for item in form %}          <!-- rendering the form fields by looping -->
+            <div class = 'row'>         <!-- Using a single row for the form -->
+                
+                <div class='col-6'>
+                    
+                    {{item.label}}
+                </div>
+                <div class='col-6'>
+                    {{item}}
+                
+            </div>
+            </div>        
+        {% endfor %}
+        <div class = 'row'>
+                <div class='offset-3 col-6 p-1 d-flex justify-content-center'>
+                <input type="submit" class = "btn btn-primary plain-back plain-text" value = "Submit">
+                </div>
+        </div>
+    </form>
+{% endblock %}

@@ -27,7 +27,6 @@ class exam(models.Model):
     def __str__(self):
         return str(self.exam_name)
 
-
 class answers(models.Model):
     user = models.ForeignKey(User,on_delete=CASCADE)
     question = models.ForeignKey('questions',on_delete=CASCADE,null=True)
