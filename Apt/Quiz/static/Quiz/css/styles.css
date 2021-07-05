@@ -1,0 +1,48 @@
+.plain-back{
+	background-color: white;
+}
+.plain-text{
+	color: gray;
+	
+}
+/* .plain-text:hover{
+	color:white;
+	text-shadow: 2px 2px 5px white;
+} */
+
+.prime-back{
+	background-color:#2a93d5;
+}
+.prime-text{
+	color:#2a93d5;
+}
+.dark-back{
+	background-color: #135589;
+}
+.dark-text{
+	color: #135589;
+}
+.container-card{
+    border-color:black;
+	border-radius: 4px;
+    background-color: silver;
+	/* border-color: #135589 ; */
+	border-width:thin;
+    box-shadow: 0px 0px 1px 0px black;
+
+
+}
+.dashboardblock{
+    margin:  1em;
+    background-color: white;
+    padding: 1em;
+}
+.footer {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	background-color: #135589;
+	color: white;
+	text-align: center;
+  }

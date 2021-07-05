@@ -29,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 #Written By Yash
-LOGIN_REDIRECT_URL = '/Quiz'
+#   LOGIN_REDIRECT_URL = ''
 
 # Application definition
 
