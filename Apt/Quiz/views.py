@@ -81,8 +81,9 @@ class add_exam(View):
             messages.add_message(request,messages.INFO,'Data not entered properly')
             return redirect('Quiz:add_parameters')
 
+def givetest(request):
 
-##hello world
+    return render(request,'Quiz/showexam.html')
 
     
 
