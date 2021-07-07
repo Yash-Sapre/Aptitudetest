@@ -4,25 +4,24 @@
 <form method="POST">
     {% csrf_token %}
     <div class="row dashboardblock">
-    {% for question in exam_questions %}
+        {% for question in exam_questions %}
+        <table>
+            <tr>
+                <td><strong>{{question.id}} ) {{question.question_text}}</strong></td>
+            </tr>
+            <tr>
+                <td><input type="radio" id="{{question.answer1}}" name={{question.id}}
+                        value="{{question.answer1}}">{{question.answer1}} </td>
+            </tr>
+            <hr>
+            <tr>
+                <td><input type="radio" id="{{question.answer1}}" name={{question.id}} value="{{question.answer2}}">{{question.answer2}} </td>
+            </tr>
 
-    
-    <div class = "col-12 ">
-        {{question}}
-        <div class="input-group m-3">
-        <input type="radio" id={{question.answer1}} name={{question.id}} value={{question.answer1}}>
-            <label for={{question.answer1}}>{{question.answer1}}</label>
-        </div>
-        <div class="input-group m-3">
-            <input type="radio" id={{question.answer2}} name={{question.id}} value={{question.answer2}}>
-            <label for={{question.answer2}}>{{question.answer2}}</label>
-        </div>
+        </table>
+        {% endfor %}
+
+        <input type="submit" value="Submit all." class="btn btn-success">
     </div>
-    
-
-
-{% endfor %}
-<input type ="submit" value ="Submit all." class="btn btn-success">
-</div>
 </form>
 {% endblock %}

@@ -8,6 +8,9 @@
     <div class = "row col-6">
         <a class="" href="{% url 'Quiz:give_test' exam.id %}">Give Test</a>
     </div>
+    <div class = "row col-6">
+        <a class="" href="{% url 'Quiz:view_result' exam.id %}">View Result</a>
+    </div>
     
 </div>
 {% endfor %}
