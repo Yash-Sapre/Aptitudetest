@@ -13,5 +13,5 @@ urlpatterns = [
     path('add_questions',views.add_questions.as_view(),name='add_questions'),
     path('add_parameters',views.add_parameters.as_view(),name='add_parameters'),
     path('add_exam',views.add_exam.as_view(),name='add_exam'),
-    path('give_test',views.givetest,name='give_test'),
+    path('give_test/<int:pk>',views.give_test.as_view(),name='give_test'),
 ]

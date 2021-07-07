@@ -1,9 +1,14 @@
 {% extends 'Quiz/base.html' %}
 {% block content %}
+{% for exam in exams %}
 <div class="row dashboardblock">
-    Hello
+    <div class = "row col-6">
+        {{exam}}
+    </div>
+    <div class = "row col-6">
+        <a class="" href="{% url 'Quiz:give_test' exam.id %}">Give Test</a>
+    </div>
+    
 </div>
-<div class="row dashboardblock">
-    Hello 2
-</div>
+{% endfor %}
 {% endblock %}

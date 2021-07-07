@@ -1,0 +1,28 @@
+{% extends 'Quiz/base.html' %}
+{%block content %}
+<h1>{{exam_selected}}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <div class="row dashboardblock">
+    {% for question in exam_questions %}
+
+    
+    <div class = "col-12 ">
+        {{question}}
+        <div class="input-group m-3">
+        <input type="radio" id={{question.answer1}} name={{question.id}} value={{question.answer1}}>
+            <label for={{question.answer1}}>{{question.answer1}}</label>
+        </div>
+        <div class="input-group m-3">
+            <input type="radio" id={{question.answer2}} name={{question.id}} value={{question.answer2}}>
+            <label for={{question.answer2}}>{{question.answer2}}</label>
+        </div>
+    </div>
+    
+
+
+{% endfor %}
+<input type ="submit" value ="Submit all." class="btn btn-success">
+</div>
+</form>
+{% endblock %}
