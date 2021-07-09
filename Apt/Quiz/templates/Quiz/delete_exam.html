@@ -1,0 +1,7 @@
+{% extends 'Quiz/base.html' %}
+{%block content %}
+<h1>{{exam_selected}}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <div class="row dashboardblock">
+        {% for question in exam_questions %}

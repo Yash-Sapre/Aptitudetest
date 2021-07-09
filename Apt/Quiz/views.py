@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.contrib.auth.views import LoginView,LogoutView
 from django.urls import reverse,reverse_lazy
 from .models import exam,answers, questions
+from django.views.generic import DeleteView
 
 #Written by Yash
 class dashboard(View):
@@ -104,37 +105,51 @@ class view_result(View):
     def get(self,request,pk):
         exam_selected = exam.objects.get(id=pk)
         submitted_answers = answers.objects.filter(exam__id = pk,user__id = request.user.id)
-        personality_dict = {'Extraversion':'E','Introversion':'I','Sensing':'S','Intuition':'N','Thinking':'T','Feeling':'F','Judgement':'J','Perception':'P'}
-        personality_dict1 = {'Extraversion':0,'Sensing':1,'Thinking':2,'Judgement':3}
-        personality_dict1_lst = ['Extraversion','Sensing','Thinking','Judgement']
-        personality_dict2 = {'Introversion':0,'Intuition':1,'Feeling':2,'Perception':3}
-        personality_dict2_lst = ['Introversion','Intuition','Feeling','Perception']
+        if(len(submitted_answers)> 0):
+            personality_dict = {'Extraversion':'E','Introversion':'I','Sensing':'S','Intuition':'N','Thinking':'T','Feeling':'F','Judgement':'J','Perception':'P'}
+            personality_dict1 = {'Extraversion':0,'Sensing':1,'Thinking':2,'Judgement':3}
+            personality_dict1_lst = ['Extraversion','Sensing','Thinking','Judgement']
+            personality_dict2 = {'Introversion':0,'Intuition':1,'Feeling':2,'Perception':3}
+            personality_dict2_lst = ['Introversion','Intuition','Feeling','Perception']
 
-        parameters_list=[]
-        
-        para_num_list=[0,0,0,0]
-        final_parameters=['Q','Q','Q','Q']
-        for ans in submitted_answers:
-            if ans.student_answer == ans.question.answer1:
-                parameters_list.append(personality_dict[ans.question.parameter.parameter1])
-                # print(personality_dict1[ans.question.parameter.parameter1])
-                para_num_list[personality_dict1[ans.question.parameter.parameter1]] += 1
+            parameters_list=[]
+            
+            para_num_list=[0,0,0,0]
+            final_parameters=['Half Extraversion half Introversion','Half S half I','Half Thinking half feeling','Half Judgement half perception']
+            for ans in submitted_answers:
+                if ans.student_answer == ans.question.answer1:
+                    parameters_list.append(personality_dict[ans.question.parameter.parameter1])
+                    # print(personality_dict1[ans.question.parameter.parameter1])
+                    para_num_list[personality_dict1[ans.question.parameter.parameter1]] += 1
 
-            else:
-                parameters_list.append(personality_dict[ans.question.parameter.parameter2])
-                para_num_list[personality_dict2[ans.question.parameter.parameter2]] -= 1
-            parameter_word = ''.join(parameters_list)
+                else:
+                    parameters_list.append(personality_dict[ans.question.parameter.parameter2])
+                    para_num_list[personality_dict2[ans.question.parameter.parameter2]] -= 1
+                parameter_word = ''.join(parameters_list)
 
-        index=0
-        for value in para_num_list:
+            index=0
+            for value in para_num_list:
 
-            if value > 0 :
-                final_parameters[index] = personality_dict1_lst[index]
-            elif value < 0 :
-                final_parameters[index] = personality_dict2_lst[index]
-            index=index+1  
+                if value > 0 :
+                    final_parameters[index] = personality_dict1_lst[index]
+                elif value < 0 :
+                    final_parameters[index] = personality_dict2_lst[index]
+                index=index+1  
 
-        return render(request,template_name='Quiz/view_result.html',context={'lst':final_parameters})                
-    
+            return render(request,template_name='Quiz/view_result.html',context={'lst':final_parameters,'lst2':parameters_list})                
+        else:
+            return redirect('Quiz:dashboard')
 
+class exam_list(View):
+    def get(self,request):
+        exams = exam.objects.all()
+        if (len(exams) == 0):
+            title="No exams available"
+        else:
+            title = "List of Exams"
+        return render(request,template_name='Quiz/exam_list.html',context={'exams':exams,'title':title})
+
+class delete_exam(DeleteView):
+    model = exam
+    template_name = 'Quiz/delete_exam.html'
     

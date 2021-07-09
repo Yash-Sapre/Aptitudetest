@@ -9,7 +9,6 @@ class questions(models.Model):
     answer1 = models.CharField(max_length=120)
     answer2 = models.CharField(max_length=120)
     parameter = models.ForeignKey('parameters',on_delete=CASCADE)
-
     def __str__(self):
         return str(self.question_text)
 

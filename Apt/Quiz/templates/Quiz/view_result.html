@@ -3,7 +3,12 @@
 
 <div class="row dashboardblock">
     <div class = "row col-6">
-        {{lst}}
+        {% for quality in lst %}
+            {{quality}}<br>
+        {% endfor %}
+        {% for quality2 in lst2 %}
+            {{quality2}}<br>
+        {% endfor %}
     </div>
 </div>
 

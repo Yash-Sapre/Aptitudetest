@@ -3,14 +3,17 @@
 {% if request.user.is_authenticated %}
 {% for exam in exams %}
 <div class="row dashboardblock">
-    <div class = "col-4">
+    <div class = "col-3">
         {{exam}}
     </div>
-    <div class = "col-4">
+    <div class = "col-3">
         <a class="" href="{% url 'Quiz:give_test' exam.id %}">Give Test</a>
     </div>
-    <div class = "col-4">
+    <div class = "col-3">
         <a class="" href="{% url 'Quiz:view_result' exam.id %}">View Result</a>
+    </div>
+    <div class = "col-3">
+        <a class="" href="{% url 'Quiz:delete_exam' exam.id %}">Give Test</a>
     </div>
     
 </div>

@@ -20,6 +20,9 @@ class add_questions_form(ModelForm):
     class Meta:
         fields = '__all__'
         model = questions
+        labels = {
+            'parameter':'Parameter for option A'
+        }
 
 class add_parameters_form(ModelForm):
     class Meta:
