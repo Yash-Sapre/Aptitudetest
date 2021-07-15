@@ -106,37 +106,23 @@ class view_result(View):
         exam_selected = exam.objects.get(id=pk)
         submitted_answers = answers.objects.filter(exam__id = pk,user__id = request.user.id)
         if(len(submitted_answers)> 0):
-            personality_dict = {'Extraversion':'E','Introversion':'I','Sensing':'S','Intuition':'N','Thinking':'T','Feeling':'F','Judgement':'J','Perception':'P'}
-            personality_dict1 = {'Extraversion':0,'Sensing':1,'Thinking':2,'Judgement':3}
-            personality_dict1_lst = ['Extraversion','Sensing','Thinking','Judgement']
-            personality_dict2 = {'Introversion':0,'Intuition':1,'Feeling':2,'Perception':3}
-            personality_dict2_lst = ['Introversion','Intuition','Feeling','Perception']
-
+            # personality_dict = {'Extraversion':'E','Introversion':'I','Sensing':'S','Intuition':'N','Thinking':'T','Feeling':'F','Judgement':'J','Perception':'P'}
+            personality_dict1 = {'Extraversion':0,'Sensing':0,'Thinking':0,'Judgement':0}
+            personality_dict2 = {'Introversion':0,'Intuition':0,'Feeling':0,'Perception':0}
             parameters_list=[]
-            
-            para_num_list=[0,0,0,0]
-            final_parameters=['Half Extraversion half Introversion','Half S half I','Half Thinking half feeling','Half Judgement half perception']
+            final_parameters=['Half Extraversion half Introversion','Half Sensing half Intuition','Half Thinking half Feeling','Half Judgement half Perception']
             for ans in submitted_answers:
                 if ans.student_answer == ans.question.answer1:
-                    parameters_list.append(personality_dict[ans.question.parameter.parameter1])
+                    parameters_list.append(ans.question.parameter.parameter1)
                     # print(personality_dict1[ans.question.parameter.parameter1])
-                    para_num_list[personality_dict1[ans.question.parameter.parameter1]] += 1
+                    personality_dict1[ans.question.parameter.parameter1] += 1
 
                 else:
-                    parameters_list.append(personality_dict[ans.question.parameter.parameter2])
-                    para_num_list[personality_dict2[ans.question.parameter.parameter2]] -= 1
-                parameter_word = ''.join(parameters_list)
+                    parameters_list.append(ans.question.parameter.parameter2)
+                    personality_dict2[ans.question.parameter.parameter2] += 1
+            
 
-            index=0
-            for value in para_num_list:
-
-                if value > 0 :
-                    final_parameters[index] = personality_dict1_lst[index]
-                elif value < 0 :
-                    final_parameters[index] = personality_dict2_lst[index]
-                index=index+1  
-
-            return render(request,template_name='Quiz/view_result.html',context={'lst':final_parameters,'lst2':parameters_list})                
+            return render(request,template_name='Quiz/view_result.html',context={'parameter_count_1':personality_dict1,'parameter_count_2':personality_dict2,'lst2':parameters_list})                
         else:
             return redirect('Quiz:dashboard')
 

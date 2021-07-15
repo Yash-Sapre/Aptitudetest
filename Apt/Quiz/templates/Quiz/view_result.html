@@ -1,15 +1,59 @@
 {% extends 'Quiz/base.html' %}
 {% block content %}
-
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
 <div class="row dashboardblock">
     <div class = "row col-6">
-        {% for quality in lst %}
-            {{quality}}<br>
-        {% endfor %}
-        {% for quality2 in lst2 %}
-            {{quality2}}<br>
-        {% endfor %}
+
+        <ol>
+            {% for quality2 in lst2 %}
+                <li>{{quality2}}</li>
+            {% endfor %}
+        </ol>
     </div>
+    <div id="myChart"></div>
+    <script>
+        var para1 = [   parseInt("{{parameter_count_1.Extraversion}}"),
+        parseInt("{{parameter_count_1.Sensing}}"),    
+        parseInt("{{parameter_count_1.Thinking}}"),
+        parseInt("{{parameter_count_1.Judgement}}"),
+    ];
+    var para2 = [   parseInt("{{parameter_count_2.Introversion}}"),
+        parseInt("{{parameter_count_2.Intuition}}"),    
+        parseInt("{{parameter_count_2.Feeling}}"),
+        parseInt("{{parameter_count_2.Perception}}"),
+    ];
+    console.log(para1);
+    console.log(para2);
+
+        let myConfig = {
+  type: 'bar',
+  plot: {
+    stacked: true,
+  },
+  'scale-x': {
+    label: { /* Scale Title */
+      text: "Attribute scale ",
+    },
+    labels: [ "Extraversion vs Introversion", "Sensing vs Intuition", "Thinking vs Feeling", "Judgement vs Perception"]
+},
+  series: [
+    {
+      values: para1,
+      stack:1
+    },
+    {
+      values: para2,
+      stack:1
+    },
+
+    ]
+};
+zingchart.render({
+        id: 'myChart',
+        data: myConfig,
+        });
+    </script>
+
 </div>
 
 {% endblock %}
