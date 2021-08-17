@@ -16,14 +16,14 @@
 
     <script src="{% static 'Quiz/js/jquery.js' %}" type="text/javascript"></script>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navstyle">
+        <div class="container-fluid ">
           <a class="navbar-brand" href="#">Aptitude Test</a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <ul class="navbar-nav mb-2 mb-lg-0 ">
             {% if request.user.is_authenticated %}
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="{% url 'Quiz:dashboard' %}" ">{{request.user}} </a>
@@ -55,11 +55,18 @@
         </div>
       </nav>
 
-        <div class = " container mt-5 p-3 container-card">
+        <div class = "container mt-5 p-2 container-card">
                     {% block content %}
                     {% endblock %}
         </div>
-
+        <footer>
+        <div class = "container-fluid mt-5 p-2 footer">
+          <div class = "row footer-block">
+          Contact Us <br>
+          About
+          </div>
+        </div>
+      </footer>
 
 </body>
 

@@ -1,58 +1,157 @@
 {% extends 'Quiz/base.html' %}
 {% block content %}
-<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+{% load static %}
+<script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}"></script>
 <div class="row dashboardblock">
-    <div class = "row col-6">
+  <!-- <div class="row col-6">
+    <strong>Answers :</strong>
+    <ol>
+      {% for quality2 in lst2 %}
+      <li>{{quality2}}</li>
+      {% endfor %}
+    </ol>
+  </div>
+   -->
+  
+  <strong>Strong Traits :</strong>
+  <canvas id="myChart"></canvas>
+  <strong>Weak Traits :</strong>
+  <div style="height : 90em ;width :20em">
+    <strong>Introversion</strong>
+    <canvas id="piechart1"></canvas>
+    <strong>Intuition</strong>
+    <canvas id="piechart2"></canvas>
+    <strong>Feeling</strong>
+    <canvas id="piechart3"></canvas>
+    <strong>Perception</strong>
+    <canvas id="piechart4"></canvas>
+  </div>
+  <script>
+    extraversion_count = parseInt("{{parameter_count_1.Extraversion}}");
+    sensing_count = parseInt("{{parameter_count_1.Sensing}}");
+    thinking_count = parseInt("{{parameter_count_1.Thinking}}");
+    judgement_count = parseInt("{{parameter_count_1.Judgement}}");
+    introversion_count = parseInt("{{parameter_count_2.Introversion}}");
+    intuition_count = parseInt("{{parameter_count_2.Intuition}}");
+    feeling_count = parseInt("{{parameter_count_2.Feeling}}");
+    perception_count = parseInt("{{parameter_count_2.Perception}}");
+    var ctx = document.getElementById('myChart');
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Extraversion', 'Sensing', 'Thinking', 'Judgement'],
+        datasets: [{
+          label: 'Strong traits',
+          data: [extraversion_count / (extraversion_count + introversion_count),
+          sensing_count / (sensing_count + intuition_count),
+          thinking_count / (thinking_count + feeling_count),
+          judgement_count / (judgement_count + perception_count)
+          ],
+          backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+          ],
+          borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+          ],
+          borderWidth: 1
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true
+          }
+        }
+      }
+    });
+    var introversion_chart = document.getElementById('piechart1');
+    var pie1 = new Chart(introversion_chart, {
+      type: 'pie',
+      data: {
+        labels: [
+          'Introversion',
+          'Extraversion',
+        ],
+        datasets: [{
+          label: 'Introversion',
+          data: [introversion_count,extraversion_count],
+          backgroundColor: [
+            'rgb(255, 0, 0)',
+            'rgb(255, 255, 255)',
+            
+          ],
+          hoverOffset: 4
+        }]
+      }
+    }
+    )
+    var intuition_chart = document.getElementById('piechart2');
+    var pie2 = new Chart(intuition_chart, {
+      type: 'pie',
+      data: {
+        labels: [
+          'Intuition',
+          'Sensing',
+        ],
+        datasets: [{
+          label: 'Intuition',
+          data: [intuition_count,sensing_count],
+          backgroundColor: [
+            'rgb(255, 0, 0)',
+            'rgb(255,255,255)',
+          ],
+          hoverOffset: 4
+        }]
+      }
+    }
+    )
+    var feeling_chart = document.getElementById('piechart3');
+    var pie3 = new Chart(feeling_chart, {
+      type: 'pie',
+      data: {
+        labels: [
+'Feeling','Thinking',
+        ],
+        datasets: [{
+          label: 'Feeling',
+          data: [feeling_count,thinking_count],
+          backgroundColor: [
+            'rgb(255, 0, 0)',
+            'rgb(255,255,255)',
+          ],
+          hoverOffset: 4
+        }]
+      }
+    }
+    )
+    var perception_chart = document.getElementById('piechart4')
+    var pie4 = new Chart(perception_chart, {
+      type: 'pie',
+      data: {
+        labels: [
+          'Perception','Judgement',
+        ],
+        datasets: [{
+          label: 'Perception',
+          data: [perception_count,judgement_count],
+          backgroundColor: [
+          'rgb(255, 0, 0)',
+            'rgb(255,255,255)',
+          
+          ],
+          hoverOffset: 4
+        }]
+      }
+    }
+    )
 
-        <ol>
-            {% for quality2 in lst2 %}
-                <li>{{quality2}}</li>
-            {% endfor %}
-        </ol>
-    </div>
-    <div id="myChart"></div>
-    <script>
-        var para1 = [   parseInt("{{parameter_count_1.Extraversion}}"),
-        parseInt("{{parameter_count_1.Sensing}}"),    
-        parseInt("{{parameter_count_1.Thinking}}"),
-        parseInt("{{parameter_count_1.Judgement}}"),
-    ];
-    var para2 = [   parseInt("{{parameter_count_2.Introversion}}"),
-        parseInt("{{parameter_count_2.Intuition}}"),    
-        parseInt("{{parameter_count_2.Feeling}}"),
-        parseInt("{{parameter_count_2.Perception}}"),
-    ];
-    console.log(para1);
-    console.log(para2);
-
-        let myConfig = {
-  type: 'bar',
-  plot: {
-    stacked: true,
-  },
-  'scale-x': {
-    label: { /* Scale Title */
-      text: "Attribute scale ",
-    },
-    labels: [ "Extraversion vs Introversion", "Sensing vs Intuition", "Thinking vs Feeling", "Judgement vs Perception"]
-},
-  series: [
-    {
-      values: para1,
-      stack:1
-    },
-    {
-      values: para2,
-      stack:1
-    },
-
-    ]
-};
-zingchart.render({
-        id: 'myChart',
-        data: myConfig,
-        });
-    </script>
+  </script>
 
 </div>
 

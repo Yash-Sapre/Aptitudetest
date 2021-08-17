@@ -1,8 +1,9 @@
+
 .plain-back{
 	background-color: white;
 }
 .plain-text{
-	color: gray;
+	color: black;
 	
 }
 /* .plain-text:hover{
@@ -23,9 +24,9 @@
 	color: #135589;
 }
 .container-card{
-    border-color:black;
+    border-color:white;
 	border-radius: 4px;
-    background-color: silver;
+    background-color :white;
 	/* border-color: #135589 ; */
 	border-width:thin;
     box-shadow: 0px 0px 1px 0px black;
@@ -38,11 +39,23 @@
     padding: 1em;
 }
 .footer {
-	position: fixed;
-	left: 0;
+	position: relative;
+
 	bottom: 0;
 	width: 100%;
+
 	background-color: #135589;
 	color: white;
 	text-align: center;
-  }
+	margin-top: auto;
+}
+
+.navstyle{
+	background-color: white;
+	box-shadow: 0px 0px 1px 0px black;
+	
+}
+.footer-block{
+	margin :1em;
+	padding :1em;
+}

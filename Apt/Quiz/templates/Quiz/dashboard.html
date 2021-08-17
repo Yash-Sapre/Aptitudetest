@@ -1,6 +1,11 @@
 {% extends 'Quiz/base.html' %}
 {% block content %}
 {% if request.user.is_authenticated %}
+<div class = "row dashboardblock">
+    <div class ='offset-4 col-4'>
+        List of tests
+    </div>
+</div>
 {% for exam in exams %}
 <div class="row dashboardblock">
     <div class = "col-4">
