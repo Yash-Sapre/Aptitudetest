@@ -1,13 +1,22 @@
+import collections
+from typing import Collection, ContextManager
+from django.http import JsonResponse
 from django.shortcuts import render,redirect
 from django.views import View
+from reportlab.lib import pagesizes
 from .forms import register_user_form,add_questions_form,add_parameters_form,add_exam_form
 from django.contrib import messages
 from django.contrib.auth.views import LoginView,LogoutView
 from django.urls import reverse,reverse_lazy
 from .models import exam,answers, questions
-from django.views.generic import DeleteView
+from django.http import FileResponse
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.units import inch
+from reportlab.lib.pagesizes import letter
+import Quiz
 
-#Written by Yash
+
 class dashboard(View):
     def get(self,request):
         exams = exam.objects.all()
@@ -106,7 +115,7 @@ class view_result(View):
         exam_selected = exam.objects.get(id=pk)
         submitted_answers = answers.objects.filter(exam__id = pk,user__id = request.user.id)
         if(len(submitted_answers)> 0):
-            # personality_dict = {'Extraversion':'E','Introversion':'I','Sensing':'S','Intuition':'N','Thinking':'T','Feeling':'F','Judgement':'J','Perception':'P'}
+            
             personality_dict1 = {'Extraversion':0,'Sensing':0,'Thinking':0,'Judgement':0}
             personality_dict2 = {'Introversion':0,'Intuition':0,'Feeling':0,'Perception':0}
             parameters_list=[]
@@ -114,7 +123,7 @@ class view_result(View):
             for ans in submitted_answers:
                 if ans.student_answer == ans.question.answer1:
                     parameters_list.append(ans.question.parameter.parameter1)
-                    # print(personality_dict1[ans.question.parameter.parameter1])
+                    
                     personality_dict1[ans.question.parameter.parameter1] += 1
 
                 else:
@@ -125,17 +134,20 @@ class view_result(View):
             return render(request,template_name='Quiz/view_result.html',context={'parameter_count_1':personality_dict1,'parameter_count_2':personality_dict2,'lst2':parameters_list})                
         else:
             return redirect('Quiz:dashboard')
+              
+def report_pdf(request):
+    buf=io.BytesIO()
+    c=canvas.Canvas(buf,pagesize=letter,bottomup=0)
+    textob=c.beginText()
+    textob.setTextOrigin(inch,inch)
+    textob.setFont("Helvetica",14)
 
-class exam_list(View):
-    def get(self,request):
-        exams = exam.objects.all()
-        if (len(exams) == 0):
-            title="No exams available"
-        else:
-            title = "List of Exams"
-        return render(request,template_name='Quiz/exam_list.html',context={'exams':exams,'title':title})
+    template='Quiz/pdf.html'
+    Context=(view_result.data2)
 
-class delete_exam(DeleteView):
-    model = exam
-    template_name = 'Quiz/delete_exam.html'
-    
+    c.drawText(textob)
+    c.showPage
+    c.save()
+    buf.seek(0)
+
+    return FileResponse(buf,as_attachment=False)

@@ -1,7 +1,20 @@
 {% extends 'Quiz/base.html' %}
 {% block content %}
 {% load static %}
-<script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}"></script>
+<div id="one">
+<button class="btn btn-primary" onclick="myfun('one')">Download pdf</button>
+</div>
+<script>
+function myfun(para){
+  
+  document.getElementById("one").style.visibility="hidden";
+  window.print(para);
+  document.getElementById("one").style.visibility="visible";
+}
+</script>
+<script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}">
+
+</script>
 <div class="row dashboardblock">
   <!-- <div class="row col-6">
     <strong>Answers :</strong>
@@ -88,6 +101,8 @@
   var myChart2 = new Chart(
     document.getElementById('myChart2'),config
   );
+
+
 </script>
 
 </div>
