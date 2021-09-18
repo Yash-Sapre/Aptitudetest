@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 <script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}"></script>
+
 <div class="row dashboardblock">
   <!-- <div class="row col-6">
     <strong>Answers :</strong>
@@ -12,13 +13,25 @@
     </ol>
   </div>
    -->
-
+   <div id="one">
+       <button class="btn btn-secondary" onclick="myfun('one')"><a href = "{% url 'Quiz:report' pk%}">Download pdf</a></button>
+    </div>
+    
   <div style="height:90em;width: 30em; margin:2em 2em ;">
     <canvas id="myChart"></canvas>
     <canvas id="myChart2"></canvas>
+    <canvas id="myChart3"></canvas>
   </div>
 </div>
 <script>
+
+function myfun(para){
+  
+  document.getElementById("one").style.visibility="hidden";
+  window.print(para);
+  document.getElementById("one").style.visibility="visible";
+  
+}
   extraversion_count = parseInt("{{parameter_count_1.Extraversion}}");
   sensing_count = parseInt("{{parameter_count_1.Sensing}}");
   thinking_count = parseInt("{{parameter_count_1.Thinking}}");
@@ -27,10 +40,53 @@
   intuition_count = parseInt("{{parameter_count_2.Intuition}}");
   feeling_count = parseInt("{{parameter_count_2.Feeling}}");
   perception_count = parseInt("{{parameter_count_2.Perception}}");
-  percent_extraversion = extraversion_count*100/(extraversion_count+introversion_count);
-  percent_sensing = sensing_count*100/(sensing_count+intuition_count);
-  percent_thinking =thinking_count*100/(thinking_count+feeling_count) ;
-  percent_judgement = judgement_count*100/(judgement_count+perception_count);
+  parameter_count = {
+    'Extraversion': extraversion_count + introversion_count, 'Sensing': sensing_count + intuition_count, 'Thinking': thinking_count + feeling_count, 'Judgement': judgement_count,
+    'Introversion': introversion_count + extraversion_count, 'Intuition': intuition_count + sensing_count, 'Feeling': feeling_count + thinking_count, 'Perception': perception_count + judgement_count
+  };
+  parameter_opposite = {'Introversion':'Extraversion','Extraversion':'Introversion',
+  'Sensing':'Intuition','Intuition':'Sensing',
+  'Thinking':'Feeling','Feeling':'Sensing',
+  'Judgement':'Perception','Perception':'Judgement'
+};
+  parameter_values = JSON.parse('{{lst3|safe}}');
+
+  function return_cumulative(parameter) {
+    cumulative_list = new Array();
+    op_cumulative_list = new Array();
+    question_list = new Array();
+    opposite = parameter_opposite[parameter]
+    
+    let i = 0;
+    let question_num = 0;
+    let op_question_num=0;
+    for (var obj in parameter_values) {
+      
+      if (parameter_values[obj] === parameter) {
+        i = i + 1;
+        question_num = question_num + 1     
+        cumulative_list.push({x:i,y:question_num * 100 / parameter_count[parameter]});
+        question_list.push(i); 
+        // console.log(parameter_values[obj]);
+      }else if (parameter_values[obj] === opposite ){
+        i = i + 1;
+        op_question_num += 1;
+        op_cumulative_list.push({x:i,y:op_question_num * 100 / parameter_count[parameter]});
+        question_list.push(i); 
+        // console.log(parameter_values[obj]);
+      }
+      
+    }
+    data_obj = { qlist: question_list, clist: cumulative_list,oc_list:op_cumulative_list };
+    return data_obj;
+  };
+  console.log(return_cumulative('Introversion'));
+  // console.log(return_cumulative('Introversion').qlist.map(String));
+
+  percent_extraversion = extraversion_count * 100 / (extraversion_count + introversion_count);
+  percent_sensing = sensing_count * 100 / (sensing_count + intuition_count);
+  percent_thinking = thinking_count * 100 / (thinking_count + feeling_count);
+  percent_judgement = judgement_count * 100 / (judgement_count + perception_count);
   const data = {
     labels: [
       'Extraversion',
@@ -40,7 +96,7 @@
     ],
     datasets: [{
       label: 'Strong Traits',
-      data: [percent_extraversion,percent_sensing,percent_thinking,percent_judgement ],
+      data: [percent_extraversion, percent_sensing, percent_thinking, percent_judgement],
       fill: true,
       backgroundColor: 'rgba(255, 99, 132, 0.2)',
       borderColor: 'rgb(255, 99, 132)',
@@ -59,7 +115,7 @@
     ],
     datasets: [{
       label: 'Weak Traits',
-      data: [100-percent_extraversion,100-percent_sensing,100-percent_thinking,100-percent_judgement ],
+      data: [100 - percent_extraversion, 100 - percent_sensing, 100 - percent_thinking, 100 - percent_judgement],
       fill: true,
       backgroundColor: 'rgba(255, 199, 132, 0.2)',
       borderColor: 'rgb(255, 199, 132)',
@@ -84,10 +140,45 @@
     document.getElementById('myChart'),
     config
   );
-  config.data = data2 
+  config.data = data2
   var myChart2 = new Chart(
-    document.getElementById('myChart2'),config
+    document.getElementById('myChart2'), config
   );
+
+  const data3 = {
+    // labels: return_cumulative('Introversion').qlist.map(String),
+    datasets: [{
+      label: 'Introversion',
+      data:return_cumulative('Introversion').clist,
+      //  data: return_cumulative('Introversion').clist,
+      fill: true,
+      showLine:true,
+      borderColor: 'rgb(255, 0, 0)',
+      
+    },{
+    label: 'Extraversion',
+    data:return_cumulative('Introversion').oc_list,
+      // data: return_cumulative('Extraversion').clist,
+      fill: true,
+      showLine:true,
+      borderColor: 'rgb(0, 255, 0)',
+      
+    }]
+  };
+  const config3 = {
+  type: 'scatter',
+  data: data3,
+  options: {
+    indexAxis: 'x',
+    scales: {
+      x: {
+        beginAtZero: true
+      }
+    }
+  }
+};
+  var myChart3 = new Chart(
+    document.getElementById('myChart3'), config3);
 </script>
 
 </div>

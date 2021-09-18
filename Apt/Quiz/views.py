@@ -6,6 +6,11 @@ from django.contrib.auth.views import LoginView,LogoutView
 from django.urls import reverse,reverse_lazy
 from .models import exam,answers, questions
 from django.views.generic import DeleteView
+from django.http import FileResponse
+from json import dumps
+import io
+from reportlab.pdfgen import canvas
+import os
 
 #Written by Yash
 class dashboard(View):
@@ -105,24 +110,29 @@ class view_result(View):
     def get(self,request,pk):
         exam_selected = exam.objects.get(id=pk)
         submitted_answers = answers.objects.filter(exam__id = pk,user__id = request.user.id)
+        personality_json = {}
         if(len(submitted_answers)> 0):
             # personality_dict = {'Extraversion':'E','Introversion':'I','Sensing':'S','Intuition':'N','Thinking':'T','Feeling':'F','Judgement':'J','Perception':'P'}
             personality_dict1 = {'Extraversion':0,'Sensing':0,'Thinking':0,'Judgement':0}
             personality_dict2 = {'Introversion':0,'Intuition':0,'Feeling':0,'Perception':0}
             parameters_list=[]
             final_parameters=['Half Extraversion half Introversion','Half Sensing half Intuition','Half Thinking half Feeling','Half Judgement half Perception']
+            count = 1
+            temp_parameter = ""
             for ans in submitted_answers:
                 if ans.student_answer == ans.question.answer1:
                     parameters_list.append(ans.question.parameter.parameter1)
                     # print(personality_dict1[ans.question.parameter.parameter1])
                     personality_dict1[ans.question.parameter.parameter1] += 1
-
+                    temp_parameter = ans.question.parameter.parameter1
                 else:
                     parameters_list.append(ans.question.parameter.parameter2)
                     personality_dict2[ans.question.parameter.parameter2] += 1
-            
-
-            return render(request,template_name='Quiz/view_result.html',context={'parameter_count_1':personality_dict1,'parameter_count_2':personality_dict2,'lst2':parameters_list})                
+                    temp_parameter = ans.question.parameter.parameter2
+                personality_json[f"q{count}"] = temp_parameter
+                count = count + 1
+            print(personality_json)
+            return render(request,template_name='Quiz/view_result.html',context={'parameter_count_1':personality_dict1,'parameter_count_2':personality_dict2,'lst2':parameters_list,'lst3':dumps(personality_json),'pk':pk})
         else:
             return redirect('Quiz:dashboard')
 
@@ -138,4 +148,23 @@ class exam_list(View):
 class delete_exam(DeleteView):
     model = exam
     template_name = 'Quiz/delete_exam.html'
+
+class report(View):
+    def get(self,request,pk):
+        buf = io.BytesIO()
+        user_id = request.user.id
+        pdf = canvas.Canvas(buf,pagesize='A4')
+        textob = pdf.beginText()
+        textob.setTextOrigin(0,770)
+        path = os.getcwd()
+        with open(os.path.join(path,'ReportBase.txt'),'r') as file:
+            lines = file.readlines()
+        for line in lines :
+            textob.textLine(line)
+        pdf.drawText(textob)
+        pdf.showPage()
+        pdf.save()
+
+        buf.seek(0)
+        return FileResponse(buf,as_attachment=True,filename=f"Report {user_id}-{pk}.pdf")
     
