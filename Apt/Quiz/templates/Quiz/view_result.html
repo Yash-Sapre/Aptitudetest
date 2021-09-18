@@ -1,110 +1,15 @@
 {% extends 'Quiz/base.html' %}
 {% block content %}
 {% load static %}
-<div id="one">
-<button class="btn btn-primary" onclick="myfun('one')">Download pdf</button>
-</div>
-<script>
-function myfun(para){
-  
-  document.getElementById("one").style.visibility="hidden";
-  window.print(para);
-  document.getElementById("one").style.visibility="visible";
-}
-</script>
-<script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}">
+<script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}"></script>
 
-</script>
 <div class="row dashboardblock">
-  <!-- <div class="row col-6">
-    <strong>Answers :</strong>
-    <ol>
-      {% for quality2 in lst2 %}
-      <li>{{quality2}}</li>
-      {% endfor %}
-    </ol>
-  </div>
-   -->
-
-  <div style="height:90em;width: 30em; margin:2em 2em ;">
-    <canvas id="myChart"></canvas>
-    <canvas id="myChart2"></canvas>
-  </div>
+   <div id="one">
+       <button class="btn btn-secondary" onclick="myfun('one')"><a href = "{% url 'Quiz:report' pk%}">Download pdf</a></button>
+    </div>
+    
 </div>
 <script>
-  extraversion_count = parseInt("{{parameter_count_1.Extraversion}}");
-  sensing_count = parseInt("{{parameter_count_1.Sensing}}");
-  thinking_count = parseInt("{{parameter_count_1.Thinking}}");
-  judgement_count = parseInt("{{parameter_count_1.Judgement}}");
-  introversion_count = parseInt("{{parameter_count_2.Introversion}}");
-  intuition_count = parseInt("{{parameter_count_2.Intuition}}");
-  feeling_count = parseInt("{{parameter_count_2.Feeling}}");
-  perception_count = parseInt("{{parameter_count_2.Perception}}");
-  percent_extraversion = extraversion_count*100/(extraversion_count+introversion_count);
-  percent_sensing = sensing_count*100/(sensing_count+intuition_count);
-  percent_thinking =thinking_count*100/(thinking_count+feeling_count) ;
-  percent_judgement = judgement_count*100/(judgement_count+perception_count);
-  const data = {
-    labels: [
-      'Extraversion',
-      'Sensing',
-      'Thinking',
-      'Judgement'
-    ],
-    datasets: [{
-      label: 'Strong Traits',
-      data: [percent_extraversion,percent_sensing,percent_thinking,percent_judgement ],
-      fill: true,
-      backgroundColor: 'rgba(255, 99, 132, 0.2)',
-      borderColor: 'rgb(255, 99, 132)',
-      pointBackgroundColor: 'rgb(255, 99, 132)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgb(255, 99, 132)'
-    }]
-  };
-  const data2 = {
-    labels: [
-      'Introversion',
-      'Intuition',
-      'Feeling',
-      'Perception',
-    ],
-    datasets: [{
-      label: 'Weak Traits',
-      data: [100-percent_extraversion,100-percent_sensing,100-percent_thinking,100-percent_judgement ],
-      fill: true,
-      backgroundColor: 'rgba(255, 199, 132, 0.2)',
-      borderColor: 'rgb(255, 199, 132)',
-      pointBackgroundColor: 'rgb(255, 199, 132)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgb(255, 199, 132)'
-    }]
-  };
-  const config = {
-    type: 'radar',
-    data: data,
-    options: {
-      elements: {
-        line: {
-          borderWidth: 3
-        }
-      }
-    },
-  };
-  var myChart = new Chart(
-    document.getElementById('myChart'),
-    config
-  );
-  config.data = data2 
-  var myChart2 = new Chart(
-    document.getElementById('myChart2'),config
-  );
 
-
-</script>
-
-</div>
 
 {% endblock %}
