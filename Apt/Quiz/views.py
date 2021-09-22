@@ -154,17 +154,33 @@ class report(View):
         buf = io.BytesIO()
         user_id = request.user.id
         pdf = canvas.Canvas(buf,pagesize='A4')
-        textob = pdf.beginText()
-        textob.setTextOrigin(0,770)
+        pdf.setFont("Helvetica",14)
+        #The basereport file is fixed and the text files is stored locally
         path = os.getcwd()
         with open(os.path.join(path,'ReportBase.txt'),'r') as file:
-            lines = file.readlines()
+            text = file.read()
+
+        # x and y have been set at starting position
+        x=50
+        y= 770
+        # lines list has been set.
+        lines = ['']
+        words = text.split()
+        line_number = 0
+        # lines list is been create with each line having limit of 78 letters
+        for word in words :
+            if len(lines[line_number] + ' ' + word) < 78 :
+                lines[line_number] = lines[line_number] + ' ' + word
+            else:
+                lines.append('')
+                line_number = line_number + 1
+        # lines are now being printed each line has height of 15 ###Note:y can have 50 lines
         for line in lines :
-            textob.textLine(line)
-        pdf.drawText(textob)
+            pdf.drawString(x,y,line)
+            y = y - 15
         pdf.showPage()
         pdf.save()
-
+        # buffer has been set at 0th position
         buf.seek(0)
         return FileResponse(buf,as_attachment=True,filename=f"Report {user_id}-{pk}.pdf")
     
