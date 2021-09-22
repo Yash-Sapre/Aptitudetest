@@ -151,7 +151,7 @@ class report(View):
                 personality_dict1[ans.question.parameter.parameter1] += 1
             else:
                 personality_dict2[ans.question.parameter.parameter2] += 1
-        drawing=Drawing(400,200)
+        drawing = Drawing(400,200)
         print(personality_dict1)
         extraversion_per=personality_dict1['Extraversion']/(personality_dict1['Extraversion']+personality_dict2['Introversion'])*100
         introversion_per=100-extraversion_per
@@ -165,7 +165,7 @@ class report(View):
             (extraversion_per,sensing_per,thinking_per,judgement_per),
             (introversion_per,intuition_per,feeling_per,perception_per)
         ]
-        bc=VerticalBarChart()
+        bc =VerticalBarChart()
         bc.x = 100
         bc.y = 100
         bc.height = 125
@@ -198,9 +198,9 @@ class report(View):
         # lines are now being printed each line has height of 15 ###Note:y can have 50 lines
         for line in lines :
             pdf.drawString(x,y,line)
-
             y = y - 15
-        pdf.drawImage(image=bc,x=400,y=200)
+
+        pdf.drawImage(image=drawing,x=400,y=200)
         pdf.showPage()
         pdf.save()
         # buffer has been set at 0th position
