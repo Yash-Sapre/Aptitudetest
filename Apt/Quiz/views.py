@@ -27,6 +27,7 @@ class dashboard(View):
 class register(View):
     form_class = register_user_form
     template_name = 'Quiz/register.html'
+
     def get(self,request):
         return render(request,template_name = 'Quiz/register.html',context = {'form':self.form_class})
     
@@ -40,6 +41,7 @@ class register(View):
             messages.add_message(request,messages.INFO,'Data not entered properly')
             return redirect('Quiz:register')
 
+
 class login(LoginView):
     template_name = 'Quiz/login.html'
 
@@ -48,6 +50,7 @@ class logout(LogoutView):
     template_name = 'Quiz/logout.html'
 
 class add_questions(View):
+
     form_class = add_questions_form
     def get(self,request):
         return render(request,template_name='Quiz/add_questions.html',context={'form':self.form_class})
@@ -64,7 +67,9 @@ class add_questions(View):
 
 
 class add_parameters(View):
+
     form_class = add_parameters_form
+
     def get(self,request):
         return render(request,template_name='Quiz/add_parameters.html',context={'form':self.form_class})
 
@@ -79,7 +84,9 @@ class add_parameters(View):
             return redirect('Quiz:add_parameters')
 
 class add_exam(View):
+
     form_class=add_exam_form
+
     def get(self,request):
         return render(request,template_name='Quiz/add_exam.html',context={'form':self.form_class})
 
@@ -94,10 +101,11 @@ class add_exam(View):
             return redirect('Quiz:add_parameters')
 
 class give_test(View):
+
     def get(self,request,pk):
         exam_selected = exam.objects.get(id = pk)
         exam_answers = answers.objects.filter(exam__id = pk,user__id = request.user.id)
-        if(len(exam_answers) == 0):
+        if len(exam_answers) == 0 :
             exam_questions = exam_selected.exam_questions.all()
             return render(request,template_name='Quiz/give_test.html',context={'exam_questions':exam_questions,'exam_selected':exam_selected})    
         else:   
@@ -114,6 +122,13 @@ class give_test(View):
 
 class view_result(View):
     def get(self,request,pk):
+        ''' This code checks whether the user has
+        given answer to the exam and then allows access to result page with download button
+        Steps:
+        1)Get exam id.
+        2)Retrieve answers from answer table with respective user id and exam id.
+        3)If answers are found that means the user gave the exam else he did not give the exam.
+        '''
         exam_selected = exam.objects.get(id=pk)
         submitted_answers = answers.objects.filter(exam__id = pk,user__id = request.user.id)
         if len(submitted_answers) > 0 :
@@ -125,7 +140,9 @@ class view_result(View):
         
 
 class exam_list(View):
+
     def get(self,request):
+        # This just checks the exam table for any exams if there are show them.
         exams = exam.objects.all()
         if len(exams) == 0:
             title = "No exams available"
@@ -142,7 +159,15 @@ class delete_exam(DeleteView):
 class report(View):
 
     def get(self,request,pk):
-
+        '''
+        The steps for calculating the parameters are :
+        1)Retrieve the answers with respective user id and exam id
+        2)Each question has two options the 1st option represents a parameter of 1st category and
+        the 2nd option represents parameter of second category
+        3)Two dictionaries have been created which stores the count of parameters
+        4)Go through all answers and if option 1 selected increase count of parameter of personality_dict1
+        and for option 2 count of parameter of personality_dict2
+        '''
         exam_selected = exam.objects.get(id=pk)
         submitted_answers = answers.objects.filter(exam__id=pk,user__id=request.user.id)
         personality_dict1 = {'Extraversion': 0,'Sensing': 0,'Thinking': 0,'Judgement': 0}
@@ -202,6 +227,6 @@ class report(View):
         pdf.build(flow)
         buf.seek(0)
 
-        return FileResponse(buf, as_attachment=True,filename=f"Report {user_id}-{pk}.pdf")
+        return FileResponse(buf, as_attachment=True, filename=f"Report {user_id}-{pk}.pdf")
     
     
