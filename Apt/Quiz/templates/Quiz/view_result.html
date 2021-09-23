@@ -8,7 +8,7 @@
         Your report is ready click the button to download the report.
     </div>
     <div class ="col-4">
-       <button class="btn btn-success" onclick="{% url 'Quiz:report' pk %}">Download pdf</button>
+        <a href="{% url 'Quiz:report' pk %}" class="btn btn-success">Download pdf</a>
     </div>
     
 </div>
