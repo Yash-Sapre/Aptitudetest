@@ -4,8 +4,11 @@
 <script src="{% static 'Quiz\js\chart.js\dist\chart.js' %}"></script>
 
 <div class="row dashboardblock">
-   <div id="one">
-       <button class="btn btn-secondary" onclick="myfun('one')"><a href = "{% url 'Quiz:report' pk %}">Download pdf</a></button>
+    <div class = "col-8">
+        Your report is ready click the button to download the report.
+    </div>
+    <div class ="col-4">
+       <button class="btn btn-success" onclick="{% url 'Quiz:report' pk %}">Download pdf</button>
     </div>
     
 </div>
