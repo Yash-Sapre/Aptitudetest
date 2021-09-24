@@ -1,3 +1,3 @@
 # Aptitudetest
 This is an aptitude test project.
-Hi yash
+Project by Yash and Venkatesh 
