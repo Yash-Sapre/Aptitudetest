@@ -13,7 +13,7 @@ import os
 from reportlab.platypus import Paragraph,SimpleDocTemplate
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib import colors
-from reportlab.graphics.shapes import Drawing
+from reportlab.graphics.shapes import Drawing, Image
 from reportlab.graphics.charts.barcharts import VerticalBarChart
 
 
@@ -195,6 +195,13 @@ class report(View):
         flow = []
         styles = getSampleStyleSheet()
 
+        # The code ofr image and logo
+        current_path = os.getcwd()
+        img_path = os.path.join(current_path,'logo.jpeg')
+        text2 = "<img src ='"+img_path +"' width ='250' height = '50' />"
+        paragraph_text = Paragraph(text2,style=styles['Normal'])
+        flow.append(paragraph_text)
+
         # The code of text part
         paragraph_text = Paragraph(text,style=styles['Normal'])
         flow.append(paragraph_text)
@@ -211,7 +218,14 @@ class report(View):
         chart.height = 125
         chart.width = 300
         chart.data = data
-        chart.strokeColor = colors.black
+        chart.strokeColor = colors.white
+        chart.bars[0].fillColor = colors.skyblue
+        chart.bars[1].fillColor = colors.orange
+        
+        #For unique colors PCMYKColor can be used
+        # PCMYKColor(0,100,100,40,alpha=85)
+        # from reportlab.lib.colors import purple, PCMYKColor, red, Color, CMYKColor, yellow
+
         chart.valueAxis.valueMin = 0
         chart.valueAxis.valueMax = 100
         chart.valueAxis.valueStep = 10
@@ -222,11 +236,12 @@ class report(View):
         chart.categoryAxis.categoryNames = ['E/I', 'S/I', 'T/F','J/P']
         drawing.add(chart)
         flow.append(drawing)
+        
 
         # Building the final pdf
         pdf.build(flow)
         buf.seek(0)
 
-        return FileResponse(buf, as_attachment=True, filename=f"Report {user_id}-{pk}.pdf")
+        return FileResponse(buf, as_attachment=False, filename=f"Report {user_id}-{pk}.pdf")
     
     
